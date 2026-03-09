@@ -1,0 +1,93 @@
+graph TB
+    subgraph "Business Users"
+        USER["👤 Migration Team<br/>• Uploads data files<br/>• Monitors progress<br/>• Reviews results<br/>• Handles errors"]
+    end
+
+    subgraph "Migration System - New Approach"
+        DASHBOARD["🖥️ Migration Dashboard<br/>• File upload interface<br/>• Progress tracking<br/>• Error reporting<br/>• Status updates"]
+        
+        MIGRATION_MANAGER["🎯 Migration Manager<br/>• Coordinates all processes<br/>• Handles file processing<br/>• Manages data batches<br/>• Tracks progress"]
+        
+        FILE_HANDLER["📁 File Handler<br/>• Handles large files<br/>• No size limits<br/>• File chunking<br/>• Secure storage"]
+        
+        DATA_VALIDATOR["✅ Data Validator<br/>• Basic field checks<br/>• Format validation<br/>• Required field checks<br/>• Data type validation"]
+        
+        PROGRESS_TRACKER["📊 Progress Tracker<br/>• Real-time updates<br/>• Batch monitoring<br/>• Error tracking<br/>• Completion status"]
+    end
+
+    subgraph "Domain Specialists"
+        CUSTOMER_SERVICE["👥 Customer Service<br/>• Customer data validation<br/>• Advanced business rules<br/>• Customer import<br/>• Customer management"]
+        
+        PRODUCT_SERVICE["📦 Product Service<br/>• Product data validation<br/>• Product catalog rules<br/>• Product import<br/>• Product management"]
+        
+        BILLING_SERVICE["💰 Billing Service<br/>• Billing data validation<br/>• Pricing rules<br/>• Subscription import<br/>• Billing management"]
+        
+        USER_SERVICE["🔐 User Service<br/>• User data validation<br/>• Security rules<br/>• User import<br/>• Access management"]
+    end
+
+    subgraph "Data Storage"
+        TEMP_STORAGE["💾 Temporary Storage<br/>• Parsed data storage<br/>• Batch processing<br/>• Error data<br/>• Progress data"]
+        
+        BUSINESS_SYSTEMS["🏪 Business Systems<br/>• Customer database<br/>• Product catalog<br/>• Billing system<br/>• User management"]
+    end
+
+    subgraph "Communication Hub"
+        MESSAGE_CENTER["📨 Message Center<br/>• Real-time updates<br/>• Progress notifications<br/>• Error alerts<br/>• Status changes"]
+    end
+
+    %% User Flow
+    USER --> DASHBOARD
+    DASHBOARD --> MIGRATION_MANAGER
+
+    %% File Processing Flow
+    MIGRATION_MANAGER --> FILE_HANDLER
+    FILE_HANDLER --> DATA_VALIDATOR
+    DATA_VALIDATOR --> TEMP_STORAGE
+
+    %% Domain Processing
+    MIGRATION_MANAGER --> CUSTOMER_SERVICE
+    MIGRATION_MANAGER --> PRODUCT_SERVICE
+    MIGRATION_MANAGER --> BILLING_SERVICE
+    MIGRATION_MANAGER --> USER_SERVICE
+
+    %% Data Flow to Business Systems
+    CUSTOMER_SERVICE --> BUSINESS_SYSTEMS
+    PRODUCT_SERVICE --> BUSINESS_SYSTEMS
+    BILLING_SERVICE --> BUSINESS_SYSTEMS
+    USER_SERVICE --> BUSINESS_SYSTEMS
+
+    %% Progress Tracking
+    CUSTOMER_SERVICE --> MESSAGE_CENTER
+    PRODUCT_SERVICE --> MESSAGE_CENTER
+    BILLING_SERVICE --> MESSAGE_CENTER
+    USER_SERVICE --> MESSAGE_CENTER
+    MESSAGE_CENTER --> PROGRESS_TRACKER
+    PROGRESS_TRACKER --> MIGRATION_MANAGER
+
+    %% User Monitoring
+    DASHBOARD --> MIGRATION_MANAGER
+    DASHBOARD --> PROGRESS_TRACKER
+
+    %% Styling
+    classDef user fill:#e1f5fe,stroke:#0288d1,stroke-width:3px
+    classDef migration fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef domain fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef storage fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    classDef communication fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+
+    class USER user
+    class DASHBOARD,MIGRATION_MANAGER,FILE_HANDLER,DATA_VALIDATOR,PROGRESS_TRACKER migration
+    class CUSTOMER_SERVICE,PRODUCT_SERVICE,BILLING_SERVICE,USER_SERVICE domain
+    class TEMP_STORAGE,BUSINESS_SYSTEMS storage
+    class MESSAGE_CENTER communication
+
+
+
+
+
+
+
+
+
+
+

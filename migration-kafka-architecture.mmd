@@ -1,0 +1,78 @@
+graph TB
+    subgraph "Client Interface"
+        GRAPHQL["GraphQL API"]
+    end
+
+    subgraph "Core Migration System"
+        MIGRATION_MS["Migrations Microservice<br/>• File parsing & chunking<br/>• Basic field validation<br/>• Migration progress tracking<br/>• Batch coordination"]
+    end
+
+    subgraph "Supporting Services"
+        FILE_MS["File Management<br/>Microservice<br/>• File upload handling<br/>• No size limits<br/>• File chunking<br/>• Secure storage"]
+        
+        MONGODB["MongoDB<br/>• Parsed records storage<br/>• Batch data<br/>• Error tracking<br/>• Progress data"]
+    end
+
+    subgraph "Message Broker System"
+        KAFKA_TASKS["Kafka<br/>Task Distribution<br/>• Migration batches<br/>• Domain assignments<br/>• Processing commands"]
+        
+        KAFKA_PROGRESS["Kafka<br/>Progress Updates<br/>• Real-time status<br/>• Error notifications<br/>• Completion updates"]
+    end
+
+    subgraph "Domain Microservices"
+        DOMAIN_MS1["Domain Microservice<br/>Products<br/>• Product validation<br/>• Catalog rules<br/>• Bulk import API<br/>• Business logic"]
+        
+        DOMAIN_MS2["Domain Microservice<br/>Customers<br/>• Customer validation<br/>• Business rules<br/>• Bulk import API<br/>• Data integrity"]
+        
+        DOMAIN_MS3["Domain Microservice<br/>Billing<br/>• Billing validation<br/>• Pricing rules<br/>• Subscription import<br/>• Financial logic"]
+    end
+
+    %% Client to Core
+    GRAPHQL -->|"Migration Requests"| MIGRATION_MS
+
+    %% Core to Supporting Services
+    MIGRATION_MS -->|"File Operations"| FILE_MS
+    MIGRATION_MS -->|"Store Parsed Data"| MONGODB
+
+    %% Core to Kafka (Task Distribution)
+    MIGRATION_MS -->|"Publish Migration Batches"| KAFKA_TASKS
+
+    %% Kafka to Domain Services
+    KAFKA_TASKS -->|"Consume Tasks"| DOMAIN_MS1
+    KAFKA_TASKS -->|"Consume Tasks"| DOMAIN_MS2
+    KAFKA_TASKS -->|"Consume Tasks"| DOMAIN_MS3
+
+    %% Domain Services to Kafka (Progress Updates)
+    DOMAIN_MS1 -->|"Progress Updates"| KAFKA_PROGRESS
+    DOMAIN_MS2 -->|"Progress Updates"| KAFKA_PROGRESS
+    DOMAIN_MS3 -->|"Progress Updates"| KAFKA_PROGRESS
+
+    %% Kafka to Core (Progress Consumption)
+    KAFKA_PROGRESS -->|"Consume Updates on Progress"| MIGRATION_MS
+
+    %% Core to Client (Status Updates)
+    MIGRATION_MS -->|"Status & Progress"| GRAPHQL
+
+    %% Styling
+    classDef client fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    classDef core fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px
+    classDef support fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef kafka fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    classDef domain fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+
+    class GRAPHQL client
+    class MIGRATION_MS core
+    class FILE_MS,MONGODB support
+    class KAFKA_TASKS,KAFKA_PROGRESS kafka
+    class DOMAIN_MS1,DOMAIN_MS2,DOMAIN_MS3 domain
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,88 @@
+graph TB
+    subgraph "Business Users"
+        USER["👤 Migration Team<br/>• Selects data source<br/>• Monitors progress<br/>• Reviews results"]
+    end
+
+    subgraph "Migration System"
+        INTERFACE["🖥️ Migration Dashboard<br/>• Easy-to-use interface<br/>• Progress tracking<br/>• Status updates"]
+        
+        BRAIN["🧠 Migration Manager<br/>• Coordinates the process<br/>• Ensures data quality<br/>• Handles errors"]
+        
+        subgraph "Data Sources"
+            FILE_OPTION["📄 File Upload<br/>• Upload CSV/Excel files<br/>• Traditional method<br/>• Still available"]
+            
+            MICROSOFT_OPTION["🏢 Microsoft Integration<br/>• Connect to Microsoft<br/>• Get customer data<br/>• Automatic retrieval"]
+            
+            FUTURE_OPTIONS["🔮 Future Integrations<br/>• Adobe connection<br/>• Google connection<br/>• Other vendors"]
+        end
+        
+        subgraph "Data Processing"
+            CLEANER["✨ Data Cleaner<br/>• Fixes data issues<br/>• Standardizes format<br/>• Validates information"]
+        end
+    end
+
+    subgraph "External Partners"
+        MICROSOFT["🏢 Microsoft<br/>• Customer information<br/>• Product details<br/>• Subscription data"]
+        
+        ADOBE["🎨 Adobe<br/>• Customer accounts<br/>• Product usage<br/>• Billing information"]
+        
+        GOOGLE["🔍 Google<br/>• Workspace data<br/>• User information<br/>• Organization details"]
+    end
+
+    subgraph "Our Platform"
+        PLATFORM["🏪 Business Platform<br/>• Customer management<br/>• Product catalog<br/>• Billing system<br/>• Reports & analytics"]
+    end
+
+    %% User Flow
+    USER --> INTERFACE
+    INTERFACE --> BRAIN
+
+    %% Data Source Selection
+    BRAIN --> FILE_OPTION
+    BRAIN --> MICROSOFT_OPTION
+    BRAIN --> FUTURE_OPTIONS
+
+    %% External Data Connections
+    MICROSOFT_OPTION <--> MICROSOFT
+    FUTURE_OPTIONS <--> ADOBE
+    FUTURE_OPTIONS <--> GOOGLE
+
+    %% Data Processing Flow
+    FILE_OPTION --> CLEANER
+    MICROSOFT_OPTION --> CLEANER
+    FUTURE_OPTIONS --> CLEANER
+    CLEANER --> BRAIN
+
+    %% Platform Integration
+    BRAIN --> PLATFORM
+    PLATFORM --> BRAIN
+
+    %% Monitoring
+    INTERFACE --> BRAIN
+    INTERFACE --> PLATFORM
+
+    %% Styling
+    classDef user fill:#e1f5fe,stroke:#0288d1,stroke-width:3px
+    classDef system fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef dataSource fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef processing fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    classDef external fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef platform fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+
+    class USER user
+    class INTERFACE,BRAIN system
+    class FILE_OPTION,MICROSOFT_OPTION,FUTURE_OPTIONS dataSource
+    class CLEANER processing
+    class MICROSOFT,ADOBE,GOOGLE external
+    class PLATFORM platform
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,45 @@
+flowchart TD
+    START([User Initiates Purchase]) --> CHECKOUT{Self-Serve Checkout<br/>or<br/>Assisted Sales Quote}
+    
+    
+    
+   CHECKOUT --> CONNECTOR_CALL[Connector Receives<br/>Quantity Update]    
+    CONNECTOR_CALL --> ADOBE_API[Connector Calls Adobe Order Preview API<br/>]
+    
+    ADOBE_API --> TIMEOUT_CHECK{Adobe API<br/>Response Time}
+    
+    TIMEOUT_CHECK -->|Fast Response | ADOBE_SUCCESS[Adobe Returns<br/>Customer Level + Quantity]
+    TIMEOUT_CHECK -->|Slow Response | TIMEOUT_ERROR[❌ Pricing, Checkout, Opportunity, Purchase TIMEOUT<br/>User Sees Error Message]
+    
+    ADOBE_SUCCESS --> PRICING_CALL[Connector Sends Data<br/>to Pricing Service]
+    
+    PRICING_CALL --> PRICING_CALC[Pricing Service Calculates<br/>Price Based on Price Books]
+    
+    PRICING_CALC --> PRICE_RETURN[Pricing Service Returns<br/>Calculated Price to Connector]
+    
+    PRICE_RETURN --> DISPLAY_PRICE[Pricing Sends Final Price<br/>to Checkout/Quote Page]
+    
+    DISPLAY_PRICE --> USER_SEES[User Sees Final Price<br/>and Can Complete Purchase]
+    
+    TIMEOUT_ERROR --> USER_ERROR[User Cannot Complete<br/>Purchase Due to Error]
+    
+    USER_SEES --> END_SUCCESS([Purchase Completed Successfully])
+    USER_ERROR --> END_FAILURE([Purchase Failed Due to Timeout])
+    
+    %% Styling
+    classDef startEnd fill:#e8f5e8,stroke:#4caf50,stroke-width:3px
+    classDef process fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    classDef decision fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    classDef error fill:#ffebee,stroke:#f44336,stroke-width:3px
+    classDef slow fill:#ffcdd2,stroke:#f44336,stroke-width:4px,stroke-dasharray: 5 5
+    
+    class START,END_SUCCESS,END_FAILURE startEnd
+    class SELF_CHECKOUT,QUOTE_FLOW,CONNECTOR_CALL,ADOBE_SUCCESS,PRICING_CALL,PRICING_CALC,PRICE_RETURN,DISPLAY_PRICE,USER_SEES process
+    class CHECKOUT,TIMEOUT_CHECK decision
+    class TIMEOUT_ERROR,USER_ERROR error
+    class ADOBE_API slow
+
+
+
+
+

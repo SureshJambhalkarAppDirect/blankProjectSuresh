@@ -1,0 +1,5 @@
+node_modules/
+.env
+screenpal-downloads/
+screenpal-video-urls.txt
+*.mp4

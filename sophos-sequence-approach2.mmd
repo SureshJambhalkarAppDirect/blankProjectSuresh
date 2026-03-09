@@ -1,0 +1,38 @@
+sequenceDiagram
+    participant C as Connector
+    participant M as Marketplace API
+    participant S as Sophos API
+    participant R as Reseller
+    
+    Note over C,R: Approach 2 - Ad Hoc Invoices with API Details
+    
+    rect rgb(255, 248, 240)
+        Note over C,M: Prerequisites
+        Note over M: Reseller/Partner ID<br/>Custom Attribute Setup
+    end
+    
+    rect rgb(248, 255, 248)
+        Note over C,S: Monthly Billing (26th) - API Calls
+        C->>S: GET /accounts/v1/relationships<br/>api.central.sophos.com
+        S-->>C: Partner List Response
+        
+        loop For Each Partner
+            C->>S: GET /partner/billing/v1/usage-report<br/>api.central.sophos.com<br/>?partnerId={id}
+            S-->>C: Usage Data Response
+            
+            C->>M: Check Partner ID exists<br/>(Custom Attribute Query)
+            M-->>C: Partner Validation Result
+            
+            alt Partner ID exists
+                C->>M: Generate Ad Hoc Invoice<br/>(Invoice API)<br/>for Reseller Company
+                M-->>C: Invoice Created
+                C->>M: Apply Usage Charges<br/>(Billing API)<br/>to Invoice
+                M-->>C: Charges Applied
+                M->>R: Send Invoice Notification
+                R-->>M: Invoice Received
+            else Partner ID missing
+                Note over C: Skip Partner - Log Missing ID
+            end
+        end
+    end
+

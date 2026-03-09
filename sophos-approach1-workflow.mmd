@@ -1,0 +1,32 @@
+flowchart TD
+    A["🚀 Start: Sophos Integration<br/>Approach 1 - Dummy Product"] --> B["📦 Create Dummy Product<br/>in Marketplace"]
+    B --> C["🔗 Provision Dummy Product<br/>with Reseller Partner ID<br/>from Sophos"]
+    C --> D["✅ Subscription Created<br/>in Marketplace"]
+    D --> E["📅 Monthly Billing Cycle<br/>(26th of every month)"]
+    E --> F["🌐 GET /accounts/v1/relationships<br/>api.central.sophos.com<br/>Get All Partner Details"]
+    F --> G["📊 For Each Partner:<br/>GET /partner/billing/v1/usage-report<br/>api.central.sophos.com<br/>Get Usage Data"]
+    G --> H{"🔍 Check Partner ID exists<br/>in Marketplace<br/>(Custom Attribute Check)"}
+    H -->|Yes| I["✅ Partner ID Found<br/>Custom Attribute Present"]
+    H -->|No| J["❌ Partner ID Missing<br/>Skip Processing"]
+    I --> K{"📋 Check Subscription exists<br/>in Marketplace<br/>(Subscription API Query)"}
+    K -->|Yes| L["💰 Create Charge<br/>against existing Subscription<br/>(Marketplace Billing API)"]
+    K -->|No| M["📝 POST /subscriptions<br/>marketplace.appdirect.com<br/>Create New Subscription"]
+    M --> N["💰 Create Charge<br/>against new Subscription<br/>(Marketplace Billing API)"]
+    L --> O["📈 Usage Processed<br/>Billing Complete"]
+    N --> O
+    J --> P["⚠️ Log Missing Partner<br/>Continue to Next Partner"]
+    P --> Q{"🔄 More Partners<br/>to Process?"}
+    O --> Q
+    Q -->|Yes| G
+    Q -->|No| R["✅ Monthly Billing<br/>Process Complete"]
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style D fill:#e8f5e8
+    style F fill:#fff3e0
+    style G fill:#fff3e0
+    style M fill:#fff3e0
+    style L fill:#fff3e0
+    style N fill:#fff3e0
+    style R fill:#e8f5e8
+

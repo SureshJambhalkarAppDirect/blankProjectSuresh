@@ -1,0 +1,47 @@
+graph TB
+    subgraph "🔗 API Endpoints Overview"
+        A1["Sophos APIs<br/>api.central.sophos.com"]
+        A2["AppDirect Marketplace APIs<br/>marketplace.appdirect.com"]
+    end
+    
+    subgraph "📊 Sophos API Calls"
+        B1["GET /accounts/v1/relationships<br/>• Get partner relationships<br/>• Returns partner list with IDs<br/>• Authentication: Bearer token"]
+        B2["GET /partner/billing/v1/usage-report<br/>• Get usage data per partner<br/>• Requires partnerId parameter<br/>• Returns billing usage metrics<br/>• Query params: ?partnerId={id}&period={month}"]
+    end
+    
+    subgraph "🏪 Marketplace API Calls"
+        C1["Custom Attribute Check<br/>• GET /companies/{id}/customAttributes<br/>• Query company custom attributes<br/>• Validate partner ID mapping"]
+        C2["Subscription Management<br/>• GET /subscriptions?companyId={id}<br/>• POST /subscriptions<br/>• Create new subscriptions<br/>• Update existing subscriptions"]
+        C3["Billing Operations<br/>• POST /charges<br/>• POST /invoices (ad hoc)<br/>• Apply usage-based billing<br/>• Generate invoices for resellers"]
+    end
+    
+    subgraph "🔄 API Flow Sequence"
+        D1["1. Get Partners<br/>↓<br/>2. Get Usage<br/>↓<br/>3. Check Partner ID<br/>↓<br/>4. Check/Create Subscription<br/>↓<br/>5. Apply Billing"]
+    end
+    
+    subgraph "🔧 Error Handling & Logging"
+        E1["• Partner ID not found in marketplace<br/>• Usage data unavailable<br/>• Subscription creation failures<br/>• Billing API errors<br/>• Rate limiting considerations"]
+    end
+    
+    A1 --> B1
+    A1 --> B2
+    A2 --> C1
+    A2 --> C2
+    A2 --> C3
+    B1 --> D1
+    B2 --> D1
+    C1 --> D1
+    C2 --> D1
+    C3 --> D1
+    D1 --> E1
+    
+    style A1 fill:#e3f2fd
+    style A2 fill:#f1f8e9
+    style B1 fill:#fff3e0
+    style B2 fill:#fff3e0
+    style C1 fill:#fce4ec
+    style C2 fill:#fce4ec
+    style C3 fill:#fce4ec
+    style D1 fill:#e8f5e8
+    style E1 fill:#ffebee
+

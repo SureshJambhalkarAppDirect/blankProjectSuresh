@@ -1,0 +1,88 @@
+graph TB
+    subgraph "User Interface Layer"
+        USER["👤 User"]
+        UI["🖥️ Migration UI<br/>• Migration Method Selection<br/>• Process Monitoring<br/>• Results Display"]
+    end
+
+    subgraph "Migration Microservice Architecture"
+        ORCH["🎯 Migration Orchestrator<br/>• Process Management<br/>• Contract Validation<br/>• Data Coordination<br/>• Error Handling"]
+        
+        subgraph "Data Contract Layer"
+            CONTRACT["📋 Data Contract<br/>• Products Schema<br/>• Companies Schema<br/>• Users Schema<br/>• Subscriptions Schema<br/>• Validation Rules<br/>• Response Format"]
+        end
+        
+        subgraph "Connector Services"
+            MS_CONN["🔗 Microsoft Connector<br/>• Contract Implementation<br/>• Data Transformation<br/>• API Integration<br/>• Quality Validation"]
+            
+            FILE_CONN["🔗 File Connector<br/>• CSV/Excel Processing<br/>• Data Validation<br/>• Contract Compliance<br/>• Error Handling"]
+            
+            FUTURE_CONN["🔗 Future Connectors<br/>• Adobe Connector<br/>• Google Connector<br/>• Other ISV Connectors<br/>• Plug & Play Architecture"]
+        end
+        
+        subgraph "Data Processing"
+            TRANSFORM["⚙️ Data Transformation<br/>• Field Mapping<br/>• Format Standardization<br/>• Business Logic Application<br/>• Quality Checks"]
+            
+            VALIDATE["✅ Data Validation<br/>• Required Fields Check<br/>• Data Type Validation<br/>• Business Rules Validation<br/>• Error Reporting"]
+        end
+    end
+
+    subgraph "External ISV Systems"
+        MS_APIS["🏢 Microsoft APIs<br/>• Graph API<br/>• Partner Center API<br/>• Azure AD API"]
+        
+        AD_APIS["🎨 Adobe APIs<br/>• Admin Console<br/>• Usage Reports<br/>• Product Catalog"]
+        
+        GOOGLE_APIS["🔍 Google APIs<br/>• Workspace Admin<br/>• Directory API<br/>• Reports API"]
+    end
+
+    subgraph "Platform Integration"
+        PLATFORM["🏪 Platform<br/>• Standardized Data Ingestion<br/>• Migration Execution<br/>• Database Operations<br/>• Status Reporting"]
+    end
+
+    %% User Interface Flow
+    USER --> UI
+    UI --> ORCH
+
+    %% Contract-based Communication
+    ORCH --> CONTRACT
+    CONTRACT --> MS_CONN
+    CONTRACT --> FILE_CONN
+    CONTRACT --> FUTURE_CONN
+
+    %% Data Processing Flow
+    MS_CONN --> TRANSFORM
+    FILE_CONN --> TRANSFORM
+    FUTURE_CONN --> TRANSFORM
+    TRANSFORM --> VALIDATE
+    VALIDATE --> ORCH
+
+    %% External API Connections
+    MS_CONN <--> MS_APIS
+    FUTURE_CONN <--> AD_APIS
+    FUTURE_CONN <--> GOOGLE_APIS
+
+    %% Platform Integration
+    ORCH --> PLATFORM
+    PLATFORM --> ORCH
+
+    %% UI Monitoring
+    UI --> ORCH
+    UI --> PLATFORM
+
+    %% Styling
+    classDef user fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    classDef ui fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef orchestrator fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef contract fill:#e8f5e8,stroke:#388e3c,stroke-width:3px
+    classDef connector fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef processing fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef external fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+    classDef platform fill:#f1f8e9,stroke:#689f38,stroke-width:2px
+
+    class USER user
+    class UI ui
+    class ORCH orchestrator
+    class CONTRACT contract
+    class MS_CONN,FILE_CONN,FUTURE_CONN connector
+    class TRANSFORM,VALIDATE processing
+    class MS_APIS,AD_APIS,GOOGLE_APIS external
+    class PLATFORM platform

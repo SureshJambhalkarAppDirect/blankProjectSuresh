@@ -1,0 +1,28 @@
+flowchart TD
+    A["🚀 Start: Sophos Integration<br/>Approach 2 - Ad Hoc Invoices"] --> B["📋 Prerequisite Check:<br/>Reseller/Partner ID Custom<br/>Attribute at Company Level"]
+    B --> C["📅 Monthly Billing Cycle<br/>(26th of every month)"]
+    C --> D["🌐 GET /accounts/v1/relationships<br/>api.central.sophos.com<br/>Get All Partner Details"]
+    D --> E["📊 For Each Partner:<br/>GET /partner/billing/v1/usage-report<br/>api.central.sophos.com<br/>Get Usage Data"]
+    E --> F{"🔍 Check Partner ID exists<br/>in Marketplace<br/>(Custom Attribute Check)"}
+    F -->|Yes| G["✅ Partner ID Found<br/>Custom Attribute Present<br/>at Reseller Company Level"]
+    F -->|No| H["❌ Partner ID Missing<br/>Skip Processing"]
+    G --> I["📄 Generate Ad Hoc Invoice<br/>against Reseller/Customer<br/>in Marketplace<br/>(Invoice API)"]
+    I --> J["💰 Apply Usage Charges<br/>to Ad Hoc Invoice<br/>(Billing API)"]
+    J --> K["📧 Invoice Generated<br/>and Sent to Reseller"]
+    K --> L["📈 Usage Processed<br/>Billing Complete"]
+    H --> M["⚠️ Log Missing Partner<br/>Continue to Next Partner"]
+    M --> N{"🔄 More Partners<br/>to Process?"}
+    L --> N
+    N -->|Yes| E
+    N -->|No| O["✅ Monthly Billing<br/>Process Complete"]
+    
+    style A fill:#e1f5fe
+    style B fill:#fff8e1
+    style D fill:#fff3e0
+    style E fill:#fff3e0
+    style G fill:#e8f5e8
+    style I fill:#f3e5f5
+    style J fill:#fff3e0
+    style K fill:#fff3e0
+    style O fill:#e8f5e8
+

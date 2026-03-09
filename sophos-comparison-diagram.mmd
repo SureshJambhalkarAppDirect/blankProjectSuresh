@@ -1,0 +1,44 @@
+graph TB
+    subgraph "🏗️ Setup Phase"
+        A1["Approach 1:<br/>Create Dummy Product<br/>+ Subscription"] 
+        A2["Approach 2:<br/>No Dummy Product<br/>Required"]
+    end
+    
+    subgraph "📋 Prerequisites (Both Approaches)"
+        B["Reseller/Partner ID<br/>Custom Attribute<br/>at Company Level"]
+    end
+    
+    subgraph "🔄 Monthly Processing (Both Approaches)"
+        C["Call Sophos API<br/>Get Partners"]
+        D["Call Usage API<br/>for Each Partner"]
+        E["Validate Partner ID<br/>in Marketplace"]
+    end
+    
+    subgraph "💰 Billing Execution"
+        F1["Approach 1:<br/>Create/Update Subscription<br/>+ Create Charges"]
+        F2["Approach 2:<br/>Generate Ad Hoc Invoices<br/>directly to Resellers"]
+    end
+    
+    subgraph "📊 Key Differences"
+        G1["Approach 1:<br/>• Subscription-based<br/>• Recurring billing model<br/>• Charge against subscription"]
+        G2["Approach 2:<br/>• Invoice-based<br/>• One-time invoicing<br/>• Direct customer billing"]
+    end
+    
+    A1 --> C
+    A2 --> C
+    B --> C
+    C --> D
+    D --> E
+    E --> F1
+    E --> F2
+    F1 --> G1
+    F2 --> G2
+    
+    style A1 fill:#e3f2fd
+    style A2 fill:#f1f8e9
+    style B fill:#fff8e1
+    style F1 fill:#fce4ec
+    style F2 fill:#e8f5e8
+    style G1 fill:#f3e5f5
+    style G2 fill:#e0f2f1
+

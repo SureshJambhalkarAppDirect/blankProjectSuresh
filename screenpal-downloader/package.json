@@ -1,0 +1,17 @@
+{
+  "name": "screenpal-downloader",
+  "version": "1.0.0",
+  "description": "Agent to download all ScreenPal recordings (login → library → Details → More → Download MP4)",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "download": "node index.js",
+    "download-remaining": "node index.js remaining-video-urls.txt",
+    "collect-remaining": "node collect-remaining-urls.js",
+    "install-browsers": "npx playwright install chromium"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "playwright": "^1.40.0"
+  }
+}

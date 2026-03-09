@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adobe Product Recommendations - Mockup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .content-box {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 40px;
+            text-align: center;
+            background-color: #ffffff;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .recommendations-heading {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .link {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .button {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 12px 24px;
+            font-size: 16px;
+            color: #333;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .button:hover {
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Loading State */
+        .loading-state {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .loading-state.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #f0f0f0;
+            border-top: 2px solid #0066cc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Sliding Notification */
+        .notification {
+            position: fixed;
+            right: -450px;
+            width: 420px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 0 8px 0 0;
+            overflow: hidden;
+            z-index: 1000;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notification.show {
+            right: 20px;
+        }
+
+        .notification.hide {
+            right: -450px;
+        }
+
+        .notification-header {
+            background-color: #20b2aa;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .notification-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #20b2aa;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .notification-title {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .notification-close:hover {
+            opacity: 0.8;
+        }
+
+        .notification-body {
+            padding: 16px;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section">
+            <h2>Sales tools</h2>
+            
+            <div class="content-box">
+                <!-- Always visible content -->
+                <div class="recommendations-heading">Adobe product recommendations</div>
+                <a href="#" class="link">Find out more</a>
+                <button class="button" id="showRecommendationsBtn">Show Recommendations</button>
+
+                <!-- Loading State -->
+                <div class="loading-state" id="loadingState">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Loading recommendations...</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Sliding Notification -->
+    <div class="notification hide" id="notification">
+        <div class="notification-header">
+            <div class="notification-header-left">
+                <div class="notification-icon">i</div>
+                <div class="notification-title">No recommendations available</div>
+            </div>
+            <button class="notification-close" id="closeNotification" aria-label="Close">×</button>
+        </div>
+        <div class="notification-body">
+            There are currently no product recommendations available for this customer. Check the eligibility criteria or try again later.
+        </div>
+    </div>
+
+    <script>
+        const showBtn = document.getElementById('showRecommendationsBtn');
+        const loadingState = document.getElementById('loadingState');
+        const notification = document.getElementById('notification');
+        const closeNotification = document.getElementById('closeNotification');
+
+        let autoHideTimeout = null;
+
+        function showLoading() {
+            loadingState.classList.add('active');
+            showBtn.disabled = true;
+            hideNotification();
+        }
+
+        function hideLoading() {
+            loadingState.classList.remove('active');
+            showBtn.disabled = false;
+        }
+
+        function positionNotification() {
+            // Position notification near the bottom of Sales tools section
+            const salesToolsSection = document.querySelector('.section');
+            if (salesToolsSection) {
+                const rect = salesToolsSection.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+                // Position it 20px from the bottom of the Sales tools section
+                const bottomPosition = windowHeight - rect.bottom - 20;
+                notification.style.bottom = Math.max(20, bottomPosition) + 'px';
+            } else {
+                notification.style.bottom = '350px';
+            }
+        }
+
+        function showNotification() {
+            // Clear any existing timeout
+            if (autoHideTimeout) {
+                clearTimeout(autoHideTimeout);
+            }
+
+            // Position notification relative to Sales tools section
+            positionNotification();
+
+            // Remove hide class and add show class
+            notification.classList.remove('hide');
+            // Use setTimeout to ensure the transition works
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+
+            // Auto-hide after 5 seconds
+            autoHideTimeout = setTimeout(() => {
+                hideNotification();
+            }, 5000);
+        }
+
+        // Recalculate position on window resize
+        window.addEventListener('resize', () => {
+            if (notification.classList.contains('show')) {
+                positionNotification();
+            }
+        });
+
+        function hideNotification() {
+            notification.classList.remove('show');
+            notification.classList.add('hide');
+            
+            // Clear timeout if notification is manually closed
+            if (autoHideTimeout) {
+                clearTimeout(autoHideTimeout);
+                autoHideTimeout = null;
+            }
+        }
+
+        function handleShowRecommendations(event) {
+            if (event) {
+                event.preventDefault();
+            }
+            
+            // Hide any existing notification
+            hideNotification();
+            
+            // Show loading state
+            showLoading();
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                // Simulate no recommendations found
+                hideLoading();
+                showNotification();
+            }, 1500);
+        }
+
+        // Close notification on X button click
+        closeNotification.addEventListener('click', () => {
+            hideNotification();
+        });
+
+        // Show recommendations button
+        showBtn.addEventListener('click', handleShowRecommendations);
+    </script>
+</body>
+</html>
+

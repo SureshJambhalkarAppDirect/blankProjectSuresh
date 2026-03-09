@@ -1,0 +1,76 @@
+flowchart TD
+    START([User Initiates Purchase]) --> CHECKOUT{Self-Serve Checkout<br/>or<br/>Assisted Sales Quote}
+    
+    CHECKOUT --> SELF_CHECKOUT[User Updates Quantity<br/>in Checkout Page]
+    
+    
+    SELF_CHECKOUT --> CACHE_CHECK{Cache Available<br/>for Configuration?}
+    
+    CACHE_CHECK -->|Yes| CACHE_HIT[Use Cached Response<br/>from Previous Request]
+    CACHE_CHECK -->|No| ADOBE_API[Connector Calls Adobe API<br/>with Customer Level + Quantity]
+    
+    CACHE_HIT --> PRICING_CALL[Connector Sends Data<br/>to Pricing Service]
+    
+    ADOBE_API --> TIMEOUT_CHECK{Adobe API<br/>Response Time}
+    
+    TIMEOUT_CHECK -->|Fast Response | ADOBE_SUCCESS[Adobe Returns<br/>Customer Discount Level + Quantity]
+    TIMEOUT_CHECK -->|Slow Response | TIMEOUT_HANDLING[⏰ TIMEOUT HANDLING<br/>Defined Timeout Reached]
+    
+    ADOBE_SUCCESS --> CACHE_STORE[Store Response<br/>in Cache]
+    CACHE_STORE --> PRICING_CALL
+    
+    TIMEOUT_HANDLING --> BLOCKING_ERROR[Show Blocking Error Message in Checkout And Quote:<br/>Adobe system issues.<br/>]
+    DEPENDENCY_NOTE["NOTE: Dependency on Pricing, Checkout and Quote"]
+
+    BLOCKING_ERROR --> SAVE_CART[Save Cart Configuration<br/>with Same Settings]
+    
+    BLOCKING_ERROR -.- DEPENDENCY_NOTE
+
+    DEPENDENCY_NOTE_1["NOTE: Dependency on Checkout"]
+
+
+    SAVE_CART --> FALLBACK_PRICE[Show Tentative Price<br/>using Fallback Logic/Ranges]
+    SAVE_CART -.- DEPENDENCY_NOTE_1
+    FALLBACK_PRICE --> BACKGROUND_POLL[AppConnectors Service<br/>Continues Polling Adobe<br/>in Background]
+    
+    BACKGROUND_POLL --> CACHE_UPDATE[Store Adobe Response<br/>in Cache When Received]
+
+    
+    PRICING_CALL --> PRICING_CALC[Pricing Service Calculates<br/>Price Based on Price Books]
+    
+    PRICING_CALC --> PRICE_RETURN[Pricing Service Returns<br/>Calculated Price to Connector]
+    
+    PRICE_RETURN --> DISPLAY_PRICE[Pricing Sends Final Price<br/>to Checkout/Quote Page]
+    
+    DISPLAY_PRICE --> USER_SEES[User Sees Final Price<br/>and Can Complete Purchase]
+    
+    USER_SEES --> END_SUCCESS([Purchase Completed Successfully])
+    
+    %% User Return Flow
+    CACHE_UPDATE --> USER_RETURN[User Returns Later]
+    USER_RETURN --> CORRECT_PRICES[User can see the correct prices<br/>loaded without delay]
+    
+    CORRECT_PRICES --> FINALIZE_CHECK{User finalizes without<br/>Quantity change?}
+    
+    FINALIZE_CHECK -->|Yes| END_SUCCESS([Purchase Completed Successfully])
+    FINALIZE_CHECK -->|No| SELF_CHECKOUT
+    
+    %% Styling
+    classDef startEnd fill:#e8f5e8,stroke:#4caf50,stroke-width:3px
+    classDef process fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    classDef decision fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    classDef solution fill:#e8f5e8,stroke:#4caf50,stroke-width:3px
+    classDef slow fill:#ffcdd2,stroke:#f44336,stroke-width:4px,stroke-dasharray: 5 5
+    classDef cache fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
+    classDef background fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    style BLOCKING_ERROR fill:#ffdddd,stroke:#cc0000,stroke-width:2px,color:#000,font-weight:bold
+    style SAVE_CART fill:#ffdddd,stroke:#cc0000,stroke-width:2px,color:#000,font-weight:bold
+    style DEPENDENCY_NOTE fill:#fff3cd,stroke:#f0ad4e,stroke-width:1px,color:#333,font-style:italic
+    
+    class START,END_SUCCESS startEnd
+    class SELF_CHECKOUT,ADOBE_SUCCESS,PRICING_CALL,PRICING_CALC,PRICE_RETURN,DISPLAY_PRICE,USER_SEES,CORRECT_PRICES process
+    class CHECKOUT,TIMEOUT_CHECK,CACHE_CHECK,FINALIZE_CHECK decision
+    class TIMEOUT_HANDLING,BLOCKING_ERROR,SAVE_CART,FALLBACK_PRICE solution
+    class ADOBE_API slow
+    class CACHE_HIT,CACHE_STORE,CACHE_UPDATE cache
+    class BACKGROUND_POLL,USER_RETURN background

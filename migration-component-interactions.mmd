@@ -1,0 +1,51 @@
+sequenceDiagram
+    participant UI as Modern Migration UI
+    participant GW as API Gateway
+    participant ORCH as Migration Orchestrator
+    participant MS_CONN as Microsoft Connector
+    participant MAP as Data Mapping Service
+    participant STAGE as Staging Service
+    participant DB as Migration Database
+    participant MP as Marketplace APIs
+
+    Note over UI,MP: Migration Process Flow
+
+    UI->>GW: Initiate Migration Process
+    GW->>ORCH: Route Migration Request
+    
+    ORCH->>MS_CONN: Request Tenant Validation
+    MS_CONN->>MS_CONN: Validate Microsoft Tenant
+    MS_CONN-->>ORCH: Tenant Validation Result
+    
+    alt Tenant Valid
+        ORCH->>MS_CONN: Retrieve Subscription Data
+        MS_CONN->>MS_CONN: Fetch from Microsoft APIs
+        MS_CONN-->>ORCH: Raw Subscription Data
+        
+        ORCH->>MAP: Process Data Mapping
+        MAP->>MAP: Apply Field Mappings
+        MAP->>MAP: Transform Data Format
+        MAP-->>ORCH: Mapped Data
+        
+        ORCH->>STAGE: Stage Data for Processing
+        STAGE->>STAGE: Apply Bulk Markups
+        STAGE->>STAGE: Prepare for Marketplace
+        STAGE->>DB: Store Staged Data
+        STAGE-->>ORCH: Staging Complete
+        
+        ORCH->>MP: Create Products/Invoices
+        MP->>MP: Generate Marketplace Objects
+        MP-->>ORCH: Creation Success
+        
+        ORCH->>DB: Update Migration Status
+        ORCH-->>GW: Migration Complete
+        GW-->>UI: Success Response
+        
+    else Tenant Invalid
+        ORCH->>DB: Log Validation Failure
+        ORCH-->>GW: Error Response
+        GW-->>UI: Error Message
+    end
+
+    Note over UI,MP: Data Flow Responsibilities<br/>• Connectors: Data Retrieval & Validation<br/>• Mapping: Data Transformation<br/>• Staging: Bulk Operations & Markups<br/>• Orchestrator: Process Management<br/>• Migration Team: Backend Data Management
+

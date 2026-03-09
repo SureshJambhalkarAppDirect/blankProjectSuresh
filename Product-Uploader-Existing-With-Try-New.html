@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Uploader - Existing Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        /* Top Blue Header */
+        .top-header {
+            background-color: #1976d2;
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background-color: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1976d2;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 12px;
+            margin-left: 16px;
+        }
+
+        .header-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            opacity: 0.9;
+        }
+
+        .header-icon:hover {
+            opacity: 1;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 24px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            placeholder-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .cart-icon {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Secondary Navigation Bar */
+        .secondary-nav {
+            background-color: white;
+            padding: 12px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 24px;
+        }
+
+        .secondary-nav a {
+            text-decoration: none;
+            color: #666;
+            font-size: 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid transparent;
+        }
+
+        .secondary-nav a.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+        }
+
+        /* Try New Experience Banner */
+        .try-new-experience-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+        }
+
+        .try-new-experience-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .try-new-experience-icon {
+            font-size: 24px;
+        }
+
+        .try-new-experience-text {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .try-new-experience-text strong {
+            font-weight: 600;
+        }
+
+        .try-new-experience-button {
+            background-color: #fff;
+            color: #667eea;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .try-new-experience-button:hover {
+            background-color: #f5f5f5;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            min-height: calc(100vh - 160px);
+        }
+
+        /* Left Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 24px 0;
+        }
+
+        .sidebar-section {
+            margin-bottom: 32px;
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            padding: 0 24px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 10px 24px;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar-link:hover {
+            background-color: #f5f5f5;
+        }
+
+        .sidebar-link.active {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            font-weight: 500;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            background-color: #f8f9fa;
+        }
+
+        .content-header {
+            margin-bottom: 24px;
+        }
+
+        .content-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 24px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .action-button {
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .action-button:hover {
+            background-color: #1565c0;
+        }
+
+        .action-button-icon {
+            font-size: 16px;
+        }
+
+        /* Activity Log Section */
+        .activity-log {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .activity-log-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .activity-filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-button {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-button:hover {
+            background-color: #e8e8e8;
+        }
+
+        .search-container {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+            max-width: 300px;
+        }
+
+        .search-input-filter {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-icon-filter {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            color: #999;
+        }
+
+        /* Activity Table */
+        .activity-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .activity-table th {
+            text-align: left;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 2px solid #e0e0e0;
+            background-color: #f8f9fa;
+        }
+
+        .activity-table td {
+            padding: 12px;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .activity-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .activity-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .activity-arrow {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .activity-status {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-success {
+            background-color: #4caf50;
+        }
+
+        .status-error {
+            background-color: #f44336;
+        }
+
+        .activity-type {
+            color: #666;
+        }
+
+        .rows-processed {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .initiated-by {
+            color: #666;
+        }
+
+        .initiated-on {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Blue Header -->
+    <div class="top-header">
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon">AC</div>
+                <div class="logo-text">ACME</div>
+            </div>
+            <div class="header-icons">
+                <span style="font-size: 16px;">⋯</span>
+                <span style="font-size: 16px;">🏢</span>
+                <span style="font-size: 16px;">🏢</span>
+            </div>
+        </div>
+        <div class="search-bar">
+            <svg class="search-icon" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+            </svg>
+            <input type="text" class="search-input" placeholder="Search all products">
+        </div>
+        <div class="header-right">
+            <a href="#" class="header-link">Manage ▼</a>
+            <a href="#" class="header-link">Suresh ▼</a>
+            <div class="cart-icon">
+                <span>🛒</span>
+                <span>Cart</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secondary Navigation Bar -->
+    <div class="secondary-nav">
+        <a href="#">Marketplace</a>
+        <a href="#">Setup</a>
+        <a href="#">Dashboard</a>
+        <a href="#" class="active">Products</a>
+        <a href="#">Settings</a>
+        <a href="#">Reports</a>
+        <a href="#">Integration Configuration</a>
+        <a href="#">Themes</a>
+        <a href="#">Programs</a>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">CATALOG</div>
+                <a href="#" class="sidebar-link">Production Catalog</a>
+                <a href="#" class="sidebar-link">Staging Catalog</a>
+                <a href="#" class="sidebar-link active">Product Uploader</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">PRICE MANAGEMENT</div>
+                <a href="#" class="sidebar-link">Price Books</a>
+                <a href="#" class="sidebar-link">Discounts</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">PROMOTIONS</div>
+                <a href="#" class="sidebar-link">Promotional Products</a>
+                <a href="#" class="sidebar-link">Merchandising Options</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">GROUPS</div>
+                <a href="#" class="sidebar-link">Product Groups</a>
+                <a href="#" class="sidebar-link">Segments</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">PRODUCT CONTENT</div>
+                <a href="#" class="sidebar-link">Media Sources</a>
+                <a href="#" class="sidebar-link">Featured Customers</a>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Try New Experience Banner -->
+            <div class="try-new-experience-banner">
+                <div class="try-new-experience-content">
+                    <span class="try-new-experience-icon">✨</span>
+                    <div class="try-new-experience-text">
+                        <strong>Try New Experience</strong><br>
+                        You can use product uploader with our new experience.
+                    </div>
+                </div>
+                <button class="try-new-experience-button">Try New Experience</button>
+            </div>
+
+            <div class="content-header">
+                <h1 class="content-title">Product Uploader</h1>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-button">
+                    <span class="action-button-icon">⬇️</span>
+                    Download Catalog
+                </button>
+                <button class="action-button">
+                    <span class="action-button-icon">⬆️</span>
+                    Update Catalog
+                </button>
+                <button class="action-button">
+                    <span class="action-button-icon">➕</span>
+                    Create Catalog
+                </button>
+                <button class="action-button">
+                    <span class="action-button-icon">⭐</span>
+                    Publish Catalog
+                </button>
+            </div>
+
+            <!-- Activity Log Section -->
+            <div class="activity-log">
+                <h2 class="activity-log-title">Activity Log</h2>
+                
+                <!-- Filters and Search -->
+                <div class="activity-filters">
+                    <button class="filter-button">Show Filters</button>
+                    <button class="filter-button">Clear Selection</button>
+                    <div class="search-container">
+                        <svg class="search-icon-filter" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                        <input type="text" class="search-input-filter" placeholder="Search">
+                    </div>
+                </div>
+
+                <!-- Activity Table -->
+                <table class="activity-table">
+                    <thead>
+                        <tr>
+                            <th>Activity</th>
+                            <th>Activity Type</th>
+                            <th>Rows Processed</th>
+                            <th>Initiated By</th>
+                            <th>Initiated On</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="activity-cell">
+                                    <span class="activity-arrow">▶</span>
+                                    <span class="activity-status status-error"></span>
+                                    <span>Download</span>
+                                </div>
+                            </td>
+                            <td class="activity-type">Download - Product Setting Billing</td>
+                            <td class="rows-processed">801</td>
+                            <td class="initiated-by">Harshal Bagul</td>
+                            <td class="initiated-on">October 29, 2025 at 02:20 PM</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="activity-cell">
+                                    <span class="activity-arrow">▶</span>
+                                    <span class="activity-status status-success"></span>
+                                    <span>Download</span>
+                                </div>
+                            </td>
+                            <td class="activity-type">Download - Product Basics</td>
+                            <td class="rows-processed">897</td>
+                            <td class="initiated-by">Harshal Bagul</td>
+                            <td class="initiated-on">October 29, 2025 at 07:49 AM</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="activity-cell">
+                                    <span class="activity-arrow">▶</span>
+                                    <span class="activity-status status-success"></span>
+                                    <span>Download</span>
+                                </div>
+                            </td>
+                            <td class="activity-type">Download - Product Setting Attribute</td>
+                            <td class="rows-processed">740</td>
+                            <td class="initiated-by">Harshal Bagul</td>
+                            <td class="initiated-on">October 29, 2025 at 07:47 AM</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="activity-cell">
+                                    <span class="activity-arrow">▶</span>
+                                    <span class="activity-status status-success"></span>
+                                    <span>Download</span>
+                                </div>
+                            </td>
+                            <td class="activity-type">Download - Product Setting Product Line</td>
+                            <td class="rows-processed">296</td>
+                            <td class="initiated-by">Harshal Bagul</td>
+                            <td class="initiated-on">October 29, 2025 at 07:46 AM</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle "Try New Experience" button click
+        document.addEventListener('DOMContentLoaded', function() {
+            const tryNewButton = document.querySelector('.try-new-experience-button');
+            
+            if (tryNewButton) {
+                tryNewButton.addEventListener('click', function() {
+                    // Redirect to new experience page
+                    window.location.href = 'Product-Uploader-New-With-Switch-Back.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

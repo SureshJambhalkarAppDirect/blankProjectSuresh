@@ -1,0 +1,148 @@
+graph TB
+    subgraph "Cloud Infrastructure"
+        subgraph "Load Balancer Layer"
+            LB["⚖️ Load Balancer<br/>• Traffic Distribution<br/>• SSL Termination<br/>• Health Checks"]
+        end
+
+        subgraph "API Gateway Cluster"
+            GW1["🌐 API Gateway 1"]
+            GW2["🌐 API Gateway 2"]
+            GW3["🌐 API Gateway 3"]
+        end
+
+        subgraph "Migration Service Cluster"
+            MS1["🎯 Migration Orchestrator 1"]
+            MS2["🎯 Migration Orchestrator 2"]
+            MS3["🎯 Migration Orchestrator 3"]
+        end
+
+        subgraph "Connector Services"
+            MS_CONN["🔗 Microsoft Connector<br/>• Auto-scaling<br/>• Circuit Breaker<br/>• Retry Logic"]
+            AD_CONN["🔗 Adobe Connector<br/>• Auto-scaling<br/>• Circuit Breaker<br/>• Retry Logic"]
+            ISV_CONN["🔗 ISV Connector<br/>• Auto-scaling<br/>• Circuit Breaker<br/>• Retry Logic"]
+        end
+
+        subgraph "Data Processing Services"
+            MAP_SVC["🗺️ Data Mapping Service<br/>• Horizontal Scaling<br/>• Batch Processing<br/>• Queue Management"]
+            STAGE_SVC["📊 Staging Service<br/>• Bulk Operations<br/>• Transaction Management<br/>• Error Handling"]
+        end
+
+        subgraph "Database Layer"
+            DB_PRIMARY["💾 Primary Database<br/>• Migration Data<br/>• Company Objects<br/>• User Objects"]
+            DB_REPLICA["💾 Read Replica<br/>• Reporting Queries<br/>• Analytics<br/>• Backup"]
+            CACHE_CLUSTER["⚡ Redis Cluster<br/>• Session Storage<br/>• API Caching<br/>• Performance"]
+        end
+
+        subgraph "Message Queue"
+            MQ["📨 Message Queue<br/>• Async Processing<br/>• Event Streaming<br/>• Dead Letter Queue"]
+        end
+
+        subgraph "Monitoring & Logging"
+            MONITOR["📊 Monitoring Stack<br/>• Metrics Collection<br/>• Alerting<br/>• Performance Tracking"]
+            LOGS["📝 Centralized Logging<br/>• Log Aggregation<br/>• Search & Analysis<br/>• Audit Trail"]
+        end
+    end
+
+    subgraph "External Dependencies"
+        MS_API["🏢 Microsoft APIs<br/>• Graph API<br/>• Partner Center<br/>• Rate Limiting"]
+        AD_API["🎨 Adobe APIs<br/>• Admin Console<br/>• Usage APIs<br/>• Rate Limiting"]
+        ISV_API["📦 ISV APIs<br/>• Product Data<br/>• Pricing APIs<br/>• Rate Limiting"]
+    end
+
+    subgraph "Marketplace Integration"
+        MP_APIS["🏪 Marketplace APIs<br/>• Invoice Generation<br/>• Billing Management<br/>• Product Creation"]
+    end
+
+    %% Load Balancer Connections
+    LB --> GW1
+    LB --> GW2
+    LB --> GW3
+
+    %% API Gateway to Services
+    GW1 --> MS1
+    GW1 --> MS2
+    GW1 --> MS3
+    GW2 --> MS1
+    GW2 --> MS2
+    GW2 --> MS3
+    GW3 --> MS1
+    GW3 --> MS2
+    GW3 --> MS3
+
+    %% Migration Service to Connectors
+    MS1 --> MS_CONN
+    MS1 --> AD_CONN
+    MS1 --> ISV_CONN
+    MS2 --> MS_CONN
+    MS2 --> AD_CONN
+    MS2 --> ISV_CONN
+    MS3 --> MS_CONN
+    MS3 --> AD_CONN
+    MS3 --> ISV_CONN
+
+    %% Migration Service to Data Processing
+    MS1 --> MAP_SVC
+    MS1 --> STAGE_SVC
+    MS2 --> MAP_SVC
+    MS2 --> STAGE_SVC
+    MS3 --> MAP_SVC
+    MS3 --> STAGE_SVC
+
+    %% Data Processing to Database
+    MAP_SVC --> DB_PRIMARY
+    STAGE_SVC --> DB_PRIMARY
+    MAP_SVC --> CACHE_CLUSTER
+    STAGE_SVC --> CACHE_CLUSTER
+
+    %% Database Replication
+    DB_PRIMARY --> DB_REPLICA
+
+    %% Message Queue Connections
+    MS1 --> MQ
+    MS2 --> MQ
+    MS3 --> MQ
+    MAP_SVC --> MQ
+    STAGE_SVC --> MQ
+
+    %% External API Connections
+    MS_CONN --> MS_API
+    AD_CONN --> AD_API
+    ISV_CONN --> ISV_API
+
+    %% Marketplace Integration
+    MS1 --> MP_APIS
+    MS2 --> MP_APIS
+    MS3 --> MP_APIS
+
+    %% Monitoring Connections
+    MONITOR --> MS1
+    MONITOR --> MS2
+    MONITOR --> MS3
+    MONITOR --> MS_CONN
+    MONITOR --> AD_CONN
+    MONITOR --> ISV_CONN
+    MONITOR --> DB_PRIMARY
+    MONITOR --> CACHE_CLUSTER
+
+    LOGS --> MS1
+    LOGS --> MS2
+    LOGS --> MS3
+    LOGS --> MS_CONN
+    LOGS --> AD_CONN
+    LOGS --> ISV_CONN
+
+    %% Styling
+    classDef infrastructure fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef service fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef database fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    classDef external fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+    classDef monitoring fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef marketplace fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+
+    class LB,GW1,GW2,GW3 infrastructure
+    class MS1,MS2,MS3,MS_CONN,AD_CONN,ISV_CONN,MAP_SVC,STAGE_SVC service
+    class DB_PRIMARY,DB_REPLICA,CACHE_CLUSTER,MQ database
+    class MS_API,AD_API,ISV_API external
+    class MONITOR,LOGS monitoring
+    class MP_APIS marketplace
+

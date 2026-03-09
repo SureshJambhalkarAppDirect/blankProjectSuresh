@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Settings - Vendor Transfer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+        <nav class="nav-links">
+            <a href="#" class="nav-link">Account</a>
+            <a href="#" class="nav-link">Dashboard</a>
+            <a href="#" class="nav-link">Applications</a>
+            <a href="#" class="nav-link">Users</a>
+            <a href="#" class="nav-link">Assign Apps</a>
+            <a href="#" class="nav-link">Billing</a>
+            <a href="#" class="nav-link nav-link-active">Company Settings</a>
+        </nav>
+    </header>
+
+    <div class="app-layout">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <section class="sidebar-section">
+                <h2 class="sidebar-heading">COMPANY SETTINGS</h2>
+                <ul class="sidebar-list">
+                    <li><a href="#" class="sidebar-link" data-panel="company">Company Settings</a></li>
+                    <li><a href="#" class="sidebar-link" data-panel="sso">Single Sign-On</a></li>
+                </ul>
+            </section>
+            <section class="sidebar-section">
+                <h2 class="sidebar-heading">VENDOR INFORMATION</h2>
+                <ul class="sidebar-list">
+                    <li><a href="#" class="sidebar-link" data-vendor="adobe">Adobe</a></li>
+                    <li><a href="#" class="sidebar-link" data-vendor="microsoft">Microsoft</a></li>
+                    <li><a href="#" class="sidebar-link" data-vendor="google">Google</a></li>
+                </ul>
+            </section>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Default / Company / SSO / Adobe / Microsoft view -->
+            <div id="panel-default" class="content-panel content-panel-visible">
+                <div class="empty-state" id="empty-state-microsoft">
+                    <div class="empty-state-icon">☰ ⋮</div>
+                    <p class="empty-state-text">No Microsoft tenant linked</p>
+                </div>
+                <div class="empty-state" id="empty-state-adobe" style="display: none;">
+                    <div class="empty-state-icon">☰ ⋮</div>
+                    <p class="empty-state-text">No Adobe tenant linked</p>
+                </div>
+            </div>
+
+            <!-- Google Vendor: Transfer UI -->
+            <div id="panel-google" class="content-panel">
+                <div id="google-transfer-intro" class="google-intro">
+                    <div class="vendor-header">
+                        <span class="vendor-icon">G</span>
+                        <h3>Google Workspace Transfer</h3>
+                    </div>
+                    <p class="intro-text">Sign in to your Google Admin console and complete the transfer. Click <strong>Transfer</strong> to open the Google Admin console below.</p>
+                    <button type="button" class="btn-transfer" id="btn-start-transfer">Transfer</button>
+                </div>
+
+                <div id="google-iframe-container" class="iframe-container" style="display: none;">
+                    <div class="iframe-toolbar">
+                        <span class="iframe-label">Google Admin Console</span>
+                        <a href="https://admin.google.com" target="_blank" rel="noopener" class="link-new-tab" id="link-open-new-tab">Open in new tab</a>
+                        <button type="button" class="btn-complete-transfer" id="btn-complete-transfer">I've completed the transfer</button>
+                    </div>
+                    <div id="iframe-loading-overlay" class="iframe-loading-overlay">
+                        <div class="loading-spinner" aria-hidden="true"></div>
+                        <p class="loading-title">Loading Google console</p>
+                        <p class="loading-subtitle">Please wait…</p>
+                    </div>
+                    <div id="iframe-fallback-banner" class="iframe-fallback-banner" style="display: none;">
+                        <span class="fallback-icon" aria-hidden="true">ℹ</span>
+                        <p>Google doesn’t allow their Admin Console to be embedded here. If you see an error above, use <strong>Open in new tab</strong> to sign in and complete your transfer, then return and click <strong>I've completed the transfer</strong>.</p>
+                    </div>
+                    <iframe
+                        id="google-admin-iframe"
+                        title="Google Admin Console"
+                        src="about:blank"
+                        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
+                        allow="fullscreen"
+                        class="vendor-iframe"
+                    ></iframe>
+                </div>
+
+                <div id="transfer-complete" class="transfer-complete" style="display: none;">
+                    <div class="complete-icon">✓</div>
+                    <h3>Transfer complete</h3>
+                    <p>Your transfer has been completed successfully. You can close this page.</p>
+                    <button type="button" class="btn-close-page" id="btn-close-page">Close this page</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

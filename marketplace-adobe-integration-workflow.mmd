@@ -1,0 +1,17 @@
+graph TB
+    CHECKOUT["Checkout/Quote<br/>Pages"]
+    CONNECTOR["Connector<br/>(Orchestration)"]
+    ADOBE["Adobe<br/>API"]
+    PRICING["Pricing<br/>Service"]
+
+    %% Bidirectional interactions
+    CHECKOUT <-->|"Quantity Updates<br/>Price Display"| CONNECTOR
+    CONNECTOR <-->|"Customer Level + Quantity<br/>⚠️ Slow Response (30s+)"| ADOBE
+    CONNECTOR <-->|"Level + Quantity Data<br/>Calculated Price"| PRICING
+
+    %% Styling
+    classDef component fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    classDef slow fill:#ffcdd2,stroke:#f44336,stroke-width:4px,stroke-dasharray: 5 5
+
+    class CHECKOUT,CONNECTOR,PRICING component
+    class ADOBE slow

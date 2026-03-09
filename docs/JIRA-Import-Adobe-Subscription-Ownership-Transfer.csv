@@ -1,0 +1,71 @@
+"Issue Type","Summary","Description","Priority","Labels","Epic Name","Epic Link"
+"Epic","Adobe Admin Sync on Subscription_Change (Take Ownership)","Context (AppDirect): When a user takes ownership of an existing Adobe subscription in the AppDirect marketplace (e.g. a departing user's subscription is transferred to an admin) a new order is created and a Subscription_Change event is emitted. Today Adobe admin is not updated automatically.
+
+What this epic delivers:
+- Consume Subscription_Change events for Adobe product subscriptions
+- Resolve the new subscription owner from the event/order
+- Create an Adobe admin account for the new owner when none exists
+- Replace the existing Adobe admin with the new owner when an admin already exists
+- Apply this behavior for all Adobe products in scope
+- Ensure processing is idempotent and failures are observable (logging optional alerts/retry)
+
+Outcome: Marketplace ownership is the source of truth; Adobe admin is automatically aligned whenever ownership is transferred via Subscription_Change.
+
+Business Value: Better customer experience; Security and compliance; Operational efficiency; Consistency across Adobe products.
+
+Success Criteria: New owner is Adobe admin (created or replaced); Previous owner no longer holds admin when replaced; All in-scope Adobe products covered; Event-to-admin-update within SLA; Reduction in support tickets.","High","marketplace,adobe,integration","Adobe Admin Sync on Subscription_Change",""
+"Story","Consume Subscription_Change events and resolve new owner for Adobe subscriptions","USER STORY:
+As a backend system I want to consume Subscription_Change events from the marketplace and identify the new subscription owner for Adobe products so that we can trigger Adobe admin create/replace for the correct user.
+
+ACCEPTANCE CRITERIA:
+- Subscription_Change events are consumed from the designated event source (e.g. event bus / webhook)
+- Event payload is parsed; subscription ID and product/sku are available
+- Subscriptions are filtered so that only Adobe product subscriptions are processed; others are ignored
+- New subscription owner is resolved from the event or linked order (e.g. user ID email account context)
+- Resolved identity is passed to the Adobe admin create/replace flow
+- Duplicate events (same event ID / idempotency key) do not cause duplicate processing; processing is idempotent","High","adobe,events","","Adobe Admin Sync on Subscription_Change"
+"Story","Create Adobe admin account for new owner when none exists","USER STORY:
+As an organization admin who has taken ownership of an Adobe subscription in the marketplace I want the system to create an Adobe admin account for me automatically when there is no existing admin so that I can manage the Adobe subscription without contacting support.
+
+ACCEPTANCE CRITERIA:
+- When Subscription_Change indicates a new owner and the subscription/account has no existing Adobe admin the system calls Adobe APIs to create an admin for the new owner
+- New owner identity (from marketplace) is mapped to Adobe identity (e.g. Adobe ID enterprise ID) per Adobe's model
+- After successful create the new owner is the Adobe admin for that subscription/account (verifiable via Adobe Admin Console or API)
+- Failure to create is logged with sufficient context (subscription user error); optional retry or alert as per NFRs","High","adobe,admin","","Adobe Admin Sync on Subscription_Change"
+"Story","Replace existing Adobe admin with new owner on ownership transfer","USER STORY:
+As an organization admin who has taken ownership of an Adobe subscription from a departing user I want the previous owner's Adobe admin to be replaced with me so that I am the only admin and the leaver no longer has admin access.
+
+ACCEPTANCE CRITERIA:
+- When Subscription_Change indicates a new owner and the subscription/account already has an Adobe admin the system replaces that admin with the new owner (deprovision/update previous provision new)
+- After successful replace the new owner is the Adobe admin and the previous owner is no longer admin for that subscription/account (verifiable via Adobe)
+- Adobe's supported replace/de-provision flow is used (no partial or undefined state)
+- Failure to replace is logged with sufficient context; optional retry or alert as per NFRs","High","adobe,admin","","Adobe Admin Sync on Subscription_Change"
+"Story","Apply admin create/replace to all Adobe products in marketplace","USER STORY:
+As a company administrator I want the same create/replace admin behavior for all Adobe products in the marketplace so that I don't have to follow product-specific processes.
+
+ACCEPTANCE CRITERIA:
+- The flow applies to all Adobe products configured in the marketplace for this epic (e.g. Creative Cloud Document Cloud or as per product list)
+- No in-scope Adobe product is excluded unless explicitly configured (e.g. feature flag or config)
+- Product/sku from the event or order is used to determine Adobe product and correct Adobe API/tenant context","High","adobe","","Adobe Admin Sync on Subscription_Change"
+"Story","Idempotent handling of Subscription_Change to avoid duplicate admins","USER STORY:
+As the system I want Subscription_Change processing to be idempotent so that duplicate or retried events do not create duplicate admins or inconsistent state.
+
+ACCEPTANCE CRITERIA:
+- Processing uses an idempotency key (e.g. event ID or subscription + order + event type)
+- Re-processing the same event (e.g. retry or duplicate delivery) does not create a second admin or leave inconsistent state
+- Outcome (success/failure) is deterministic for the same idempotency key","High","adobe,events","","Adobe Admin Sync on Subscription_Change"
+"Story","Logging metrics and optional alerting for Adobe admin create/replace","USER STORY:
+As an operations or support engineer I want failures in creating or replacing the Adobe admin to be logged and visible (and optionally alerted) so that we can fix issues retry or escalate.
+
+ACCEPTANCE CRITERIA:
+- All Subscription_Change events processed for Adobe (success and failure) are logged with at least: event ID subscription new owner outcome and error details if failed
+- Metrics are available (e.g. success rate latency from event to completion) for monitoring
+- Optional: configurable alerting when Adobe API calls fail or when failure rate exceeds a threshold
+- Optional: retry policy (e.g. exponential backoff) for transient Adobe API failures","Medium","adobe,observability","","Adobe Admin Sync on Subscription_Change"
+"Story","Configuration or feature flag for Adobe admin sync on Subscription_Change","USER STORY:
+As an operations or product owner I want the ability to enable/disable or roll out this behavior by product or tenant so that we can control rollout and disable if needed.
+
+ACCEPTANCE CRITERIA:
+- Behavior can be enabled/disabled via configuration or feature flag (e.g. by product SKU or tenant)
+- When disabled Subscription_Change events for Adobe are not processed for admin create/replace (or are no-op)
+- Configuration is documented and changeable without code deploy if possible","Medium","adobe,config","","Adobe Admin Sync on Subscription_Change"

@@ -1,0 +1,45 @@
+sequenceDiagram
+    participant C as Connector
+    participant M as Marketplace API
+    participant S as Sophos API
+    participant R as Reseller
+    
+    Note over C,R: Approach 1 - Dummy Product & Subscription with API Details
+    
+    rect rgb(240, 248, 255)
+        Note over C,M: Setup Phase
+        C->>M: Create Dummy Product
+        M-->>C: Product Created
+        C->>M: Provision with Partner ID
+        M-->>C: Subscription Created
+    end
+    
+    rect rgb(248, 255, 248)
+        Note over C,S: Monthly Billing (26th) - API Calls
+        C->>S: GET /accounts/v1/relationships<br/>api.central.sophos.com
+        S-->>C: Partner List Response
+        
+        loop For Each Partner
+            C->>S: GET /partner/billing/v1/usage-report<br/>api.central.sophos.com<br/>?partnerId={id}
+            S-->>C: Usage Data Response
+            
+            C->>M: Check Partner ID exists<br/>(Custom Attribute Query)
+            M-->>C: Partner Validation Result
+            
+            alt Partner ID exists
+                C->>M: Check Subscription exists<br/>(Subscription Query API)
+                alt Subscription exists
+                    C->>M: Create Charge<br/>(Billing API)
+                    M-->>C: Charge Created
+                else Subscription doesn't exist
+                    C->>M: POST /subscriptions<br/>marketplace.appdirect.com
+                    M-->>C: Subscription Created
+                    C->>M: Create Charge<br/>(Billing API)
+                    M-->>C: Charge Created
+                end
+            else Partner ID missing
+                Note over C: Skip Partner - Log Missing ID
+            end
+        end
+    end
+
